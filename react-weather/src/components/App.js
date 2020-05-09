@@ -101,7 +101,7 @@ function mapDataToWeatherInterface(data, city) {
     : null;
   const windData = data.wind;
   const mapped = {
-    city: city,
+    city: city.charAt(0).toUpperCase() + city.slice(1),
     date: data.date,
     temperature: temperatureData
       ? temperatureData.temperature
