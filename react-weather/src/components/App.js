@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import ignoreCase from "ignore-case";
+
 import { Container } from "@material-ui/core";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
@@ -88,14 +90,14 @@ const isCityValid = (response, minDate, city) => {
   const weather = response.filter(
     (res) => new Date(res.date).getTime() === minDate.getTime()
   )[0];
-  if (weather.places.filter((place) => place.name === city).length === 0) {
+  if (weather.places.filter((place) => ignoreCase.equals(place.name, city)).length === 0) {
     throw new Error("Error: Location not found ", city);
   }
 };
 
 function mapDataToWeatherInterface(data, city) {
   const temperatureData = data.places
-    ? data.places.filter((place) => place.name === city)[0]
+    ? data.places.filter((place) => ignoreCase.equals(place.name, city))[0]
     : null;
   const windData = data.wind;
   const mapped = {
