@@ -138,10 +138,9 @@ function mapDataToWeatherInterface(data, city) {
       : 800;
   }
 
-  if (data.maxTemperature && data.minTemperature) {
     mapped.min = data.minTemperature;
     mapped.max = data.maxTemperature;
-  }
+  
 
   return mapped;
 }
