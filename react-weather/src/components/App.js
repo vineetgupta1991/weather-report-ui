@@ -118,12 +118,12 @@ function mapDataToWeatherInterface(data, city) {
       : null,
     icon_id: data.phenomenon.toUpperCase().includes("CLOUD")
       ? 801
-      : data.phenomenon.toUpperCase().includes("SHOWER")
+      : (data.phenomenon.toUpperCase().includes("SHOWER") || data.phenomenon.toUpperCase().includes("RAIN"))
       ? 313
       : 800,
     icon: data.phenomenon.toUpperCase().includes("CLOUD")
       ? 801
-      : data.phenomenon.toUpperCase().includes("SHOWER")
+      : (data.phenomenon.toUpperCase().includes("SHOWER") || data.phenomenon.toUpperCase().includes("RAIN"))
       ? 313
       : 800
   };
@@ -131,12 +131,12 @@ function mapDataToWeatherInterface(data, city) {
   if (temperatureData) {
     mapped.icon_id = temperatureData.phenomenon.toUpperCase().includes("CLOUD")
       ? 801
-      : temperatureData.phenomenon.toUpperCase().includes("SHOWER")
+      : (temperatureData.phenomenon.toUpperCase().includes("SHOWER") || temperatureData.phenomenon.toUpperCase().includes("RAIN"))
       ? 313
       : 800;
     mapped.icon = temperatureData.phenomenon.toUpperCase().includes("CLOUD")
       ? 801
-      : temperatureData.phenomenon.toUpperCase().includes("SHOWER")
+      : (temperatureData.phenomenon.toUpperCase().includes("SHOWER") || temperatureData.phenomenon.toUpperCase().includes("RAIN"))
       ? 313
       : 800;
   }
