@@ -14,17 +14,17 @@ export default function App() {
 
   useEffect(() => {
     getForecast(city)
-      .then((data) => {
+      .then(data => {
         setCurrentWeather(data[0]);
         setForecast(data);
         setError(null);
       })
-      .catch((err) => {
+      .catch(err => {
         setError(err.message);
       });
   }, [city, error]);
 
-  const handleCityChange = (city) => {
+  const handleCityChange = city => {
     setCity(city);
   };
 
@@ -61,24 +61,24 @@ function handleResponse(response) {
   }
 }
 
-const getForecast = (city) => {
+const getForecast = city => {
   return fetch(`${process.env.REACT_APP_API_URL}/v1/weather/report`, {
     crossDomain: true,
     method: "GET",
     mode: "cors",
     headers: {
-      language: "eng",
-    },
+      language: "eng"
+    }
   })
-    .then((response) => handleResponse(response))
-    .then((response) => {
+    .then(response => handleResponse(response))
+    .then(response => {
       if (Object.entries(response).length) {
         const forecast = [];
         const dates = [];
-        response.forEach((res) => dates.push(new Date(res.date)));
+        response.forEach(res => dates.push(new Date(res.date)));
         const minDate = new Date(Math.min.apply(null, dates));
         isCityValid(response, minDate, city);
-        response.forEach((weather) =>
+        response.forEach(weather =>
           forecast.push(mapDataToWeatherInterface(weather, city))
         );
         return forecast;
@@ -88,16 +88,19 @@ const getForecast = (city) => {
 
 const isCityValid = (response, minDate, city) => {
   const weather = response.filter(
-    (res) => new Date(res.date).getTime() === minDate.getTime()
+    res => new Date(res.date).getTime() === minDate.getTime()
   )[0];
-  if (weather.places.filter((place) => ignoreCase.equals(place.name, city)).length === 0) {
+  if (
+    weather.places.filter(place => ignoreCase.equals(place.name, city))
+      .length === 0
+  ) {
     throw new Error("Error: Location not found ", city);
   }
 };
 
 function mapDataToWeatherInterface(data, city) {
   const temperatureData = data.places
-    ? data.places.filter((place) => ignoreCase.equals(place.name, city))[0]
+    ? data.places.filter(place => ignoreCase.equals(place.name, city))[0]
     : null;
   const windData = data.wind;
   const mapped = {
@@ -110,37 +113,36 @@ function mapDataToWeatherInterface(data, city) {
     wind_speed: windData
       ? Math.max.apply(
           null,
-          windData.map((w) => w.speedMax)
+          windData.map(w => w.speedMax)
         )
       : null,
-    icon_id: data.phenomenon.includes("cloud")
+    icon_id: data.phenomenon.toUpperCase().includes("CLOUD")
       ? 801
-      : data.phenomenon.includes("shower")
+      : data.phenomenon.toUpperCase().includes("SHOWER")
       ? 313
       : 800,
-    icon: data.phenomenon.includes("cloud")
+    icon: data.phenomenon.toUpperCase().includes("CLOUD")
       ? 801
-      : data.phenomenon.includes("shower")
+      : data.phenomenon.toUpperCase().includes("SHOWER")
       ? 313
-      : 800,
+      : 800
   };
 
   if (temperatureData) {
-    mapped.icon_id = temperatureData.phenomenon.includes("cloud")
+    mapped.icon_id = temperatureData.phenomenon.toUpperCase().includes("CLOUD")
       ? 801
-      : temperatureData.phenomenon.includes("shower")
+      : temperatureData.phenomenon.toUpperCase().includes("SHOWER")
       ? 313
       : 800;
-    mapped.icon = temperatureData.phenomenon.includes("cloud")
+    mapped.icon = temperatureData.phenomenon.toUpperCase().includes("CLOUD")
       ? 801
-      : temperatureData.phenomenon.includes("shower")
+      : temperatureData.phenomenon.toUpperCase().includes("SHOWER")
       ? 313
       : 800;
   }
 
-    mapped.min = data.minTemperature;
-    mapped.max = data.maxTemperature;
-  
+  mapped.min = data.minTemperature;
+  mapped.max = data.maxTemperature;
 
   return mapped;
 }
